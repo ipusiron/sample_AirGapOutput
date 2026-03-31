@@ -52,6 +52,44 @@ Copy-Item jpn.traineddata "C:\Program Files\Tesseract-OCR\tessdata\"
 tesseract --list-langs
 ```
 
+### screen_vlm_monitor.py（第8章）
+
+OBS Studioの仮想カメラから映像を取得し、画面に変化があったときだけローカルVLM（Ollama経由）で画面内容を解析してテキストを保存するスクリプトです。
+
+#### 前提条件
+
+- Python 3.8以上
+- [Ollama](https://ollama.com/)（ローカルLLM/VLM実行エンジン）
+- Qwen3-VLモデル（`ollama pull qwen3-vl` でダウンロード）
+- NVIDIA GPU（VRAM 8GB以上推奨）
+
+#### インストール
+
+```bash
+pip install opencv-python requests
+```
+
+#### 使い方
+
+```bash
+# Ollamaが起動していることを確認し、OBS Studioで「仮想カメラ開始」を押してから実行する
+python screen_vlm_monitor.py --device 2 --interval 15 --outdir ./vlm_logs
+```
+
+#### オプション
+
+| オプション | 説明 | デフォルト |
+|-----------|------|----------|
+| `--device` | カメラデバイス番号 | 0 |
+| `--interval` | チェック間隔（秒） | 10 |
+| `--threshold` | 差分閾値（%） | 3.0 |
+| `--model` | Ollamaのモデル名 | qwen3-vl |
+| `--prompt` | VLMに送るプロンプト | （日本語での画面説明を指示） |
+| `--width` | キャプチャー幅 | 1920 |
+| `--height` | キャプチャー高さ | 1080 |
+| `--outdir` | 出力先ディレクトリー | ./vlm_logs |
+| `--ollama-url` | Ollama APIのURL | http://localhost:11434 |
+
 ## 書籍情報
 
 - 書名: エアギャップ・ブリッジ 隔離環境のデータ出力技法
