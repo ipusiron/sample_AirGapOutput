@@ -52,6 +52,22 @@ Copy-Item jpn.traineddata "C:\Program Files\Tesseract-OCR\tessdata\"
 tesseract --list-langs
 ```
 
+### com.user.caffeinate.plist（第7章）
+
+macOSのcaffeinateコマンドをログイン時に自動起動するためのlaunchd設定ファイルです。
+HDMIキャプチャーによる常時監視環境で、Mac Miniのスリープを恒久的に抑制します。
+
+#### 使い方
+
+```bash
+# ~/Library/LaunchAgents/ にコピーして登録
+cp com.user.caffeinate.plist ~/Library/LaunchAgents/
+launchctl load ~/Library/LaunchAgents/com.user.caffeinate.plist
+
+# 解除する場合
+launchctl unload ~/Library/LaunchAgents/com.user.caffeinate.plist
+```
+
 ### screen_vlm_monitor.py（第8章）
 
 OBS Studioの仮想カメラから映像を取得し、画面に変化があったときだけローカルVLM（Ollama経由）で画面内容を解析してテキストを保存するスクリプトです。
