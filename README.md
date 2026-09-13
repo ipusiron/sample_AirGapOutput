@@ -4,7 +4,7 @@
 
 ## 収録スクリプト
 
-### screen_ocr_monitor.py（第7章）
+### screen_ocr_monitor.py（第8章）
 
 OBS Studioの仮想カメラから映像を取得し、画面に変化があったときだけOCRを実行してテキストを保存する差分検知OCRスクリプトです。
 
@@ -52,7 +52,7 @@ Copy-Item jpn.traineddata "C:\Program Files\Tesseract-OCR\tessdata\"
 tesseract --list-langs
 ```
 
-### com.user.caffeinate.plist（第7章）
+### com.user.caffeinate.plist（第8章）
 
 macOSのcaffeinateコマンドをログイン時に自動起動するためのlaunchd設定ファイルです。
 HDMIキャプチャーによる常時監視環境で、Mac Miniのスリープを恒久的に抑制します。
@@ -68,7 +68,7 @@ launchctl load ~/Library/LaunchAgents/com.user.caffeinate.plist
 launchctl unload ~/Library/LaunchAgents/com.user.caffeinate.plist
 ```
 
-### screen_vlm_monitor.py（第8章）
+### screen_vlm_monitor.py（第9章）
 
 OBS Studioの仮想カメラから映像を取得し、画面に変化があったときだけローカルVLM（Ollama経由）で画面内容を解析してテキストを保存するスクリプトです。
 
