@@ -6,6 +6,7 @@ OBS Studioの仮想カメラ（または任意のUSBカメラ）から映像を�
 
 使い方:
     python screen_ocr_monitor.py                    # デフォルト設定で起動
+    python screen_ocr_monitor.py --list-devices      # 利用可能なデバイス番号を一覧表示
     python screen_ocr_monitor.py --device 1          # カメラデバイス番号を指定
     python screen_ocr_monitor.py --interval 10       # 10秒間隔でチェック
     python screen_ocr_monitor.py --threshold 5.0     # 差分閾値を変更
@@ -30,6 +31,9 @@ import numpy as np
 import pytesseract
 
 
+MAX_DEVICE_INDEX = 9
+
+
 def parse_args():
     parser = argparse.ArgumentParser(
         description="画面の差分検知OCRスクリプト"
@@ -37,6 +41,10 @@ def parse_args():
     parser.add_argument(
         "--device", type=int, default=0,
         help="カメラデバイス番号（デフォルト: 0）"
+    )
+    parser.add_argument(
+        "--list-devices", action="store_true",
+        help="利用可能なデバイス番号を一覧表示して終了する"
     )
     parser.add_argument(
         "--interval", type=int, default=5,
@@ -63,6 +71,33 @@ def parse_args():
         help="OCR結果の出力先ディレクトリー（デフォルト: ./ocr_logs）"
     )
     return parser.parse_args()
+
+
+def list_devices(outdir):
+    """利用可能なカメラデバイス番号を探索して一覧表示する。"""
+    print(f"カメラデバイスを探索します（0〜{MAX_DEVICE_INDEX}）。")
+    available = []
+    for index in range(MAX_DEVICE_INDEX + 1):
+        cap = cv2.VideoCapture(index)
+        ok, frame = cap.read() if cap.isOpened() else (False, None)
+        backend = cap.getBackendName() if ok else ""
+        cap.release()
+        if not ok:
+            continue  # 開けない、またはフレームを取得できないデバイス
+        height, width = frame.shape[:2]
+        preview = outdir / f"device_{index}.png"
+        cv2.imwrite(str(preview), frame)
+        print(f"  [{index}] {width}x{height} ({backend}) -> {preview}")
+        available.append(index)
+    print()
+    if not available:
+        print("利用可能なカメラデバイスが見つかりません。")
+        print("OBS Studioで「仮想カメラ開始」を押したか確認してください。")
+        return
+    numbers = ", ".join(str(i) for i in available)
+    print(f"利用可能なデバイス番号: {numbers}")
+    print("プレビュー画像を確認し、目的の画面が写っている番号を")
+    print("--device オプションに指定してください。")
 
 
 def compute_diff_percent(frame1, frame2):
@@ -103,6 +138,10 @@ def main():
     outdir = Path(args.outdir)
     outdir.mkdir(parents=True, exist_ok=True)
 
+    if args.list_devices:
+        list_devices(outdir)
+        return
+
     print(f"カメラデバイス: {args.device}")
     print(f"チェック間隔: {args.interval}秒")
     print(f"差分閾値: {args.threshold}%")
@@ -115,7 +154,7 @@ def main():
     cap = cv2.VideoCapture(args.device)
     if not cap.isOpened():
         print(f"エラー: カメラデバイス {args.device} を開けません。", file=sys.stderr)
-        print("--device オプションでデバイス番号を変更してください。", file=sys.stderr)
+        print("--list-devices オプションでデバイス番号を確認してください。", file=sys.stderr)
         sys.exit(1)
 
     # 解像度を1920x1080に設定（仮想カメラのデフォルトが640x480のため）

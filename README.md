@@ -27,10 +27,18 @@ pip install opencv-python pytesseract
 python screen_ocr_monitor.py --device 2 --interval 5 --lang jpn+eng
 ```
 
+デバイス番号はOSやカメラの接続状況によって変わります。
+`--list-devices` を付けて実行すると、利用可能なデバイス番号とプレビュー画像を出力します。
+
+```bash
+python screen_ocr_monitor.py --list-devices
+```
+
 #### オプション
 
 | オプション | 説明 | デフォルト |
 |-----------|------|----------|
+| `--list-devices` | 利用可能なデバイス番号を一覧表示して終了 | - |
 | `--device` | カメラデバイス番号 | 0 |
 | `--interval` | チェック間隔（秒） | 5 |
 | `--threshold` | 差分閾値（%） | 3.0 |
@@ -92,10 +100,17 @@ pip install opencv-python requests
 python screen_vlm_monitor.py --device 2 --interval 15 --outdir ./vlm_logs
 ```
 
+デバイス番号の調べ方は `screen_ocr_monitor.py` と同じです。
+
+```bash
+python screen_vlm_monitor.py --list-devices
+```
+
 #### オプション
 
 | オプション | 説明 | デフォルト |
 |-----------|------|----------|
+| `--list-devices` | 利用可能なデバイス番号を一覧表示して終了 | - |
 | `--device` | カメラデバイス番号 | 0 |
 | `--interval` | チェック間隔（秒） | 10 |
 | `--threshold` | 差分閾値（%） | 3.0 |
